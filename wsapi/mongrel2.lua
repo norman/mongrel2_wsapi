@@ -6,6 +6,7 @@
 --
 -----------------------------------------------------------------------------
 require "coxpcall"
+require "lfs"
 
 pcall = copcall
 xpcall = coxpcall
@@ -118,13 +119,14 @@ function common.send_output(out, status, headers, res_iter, write_method, res_li
 end
 
 
-function run(app_run, context, connection)
+function run(app_run, context, connection, docroot)
   while true do
     local request = connection:recv()
     if request:is_disconnect() then
       io.stderr:write("Received disconnect")
     else
       local cgi_vars = get_cgi_vars(request)
+      cgi_vars.DOCUMENT_ROOT = docroot or lfs.currentdir()
       local get_cgi_var = function(key)
         -- here for debugging the CGI vars, probably will remove this later
         if key == "CGI_VARS" then
@@ -153,10 +155,11 @@ function run(app_run, context, connection)
       }
 
       local code, headers = common.run(app_run, env)
+      local status = tonumber(code) or tonumber(code:match("^(%d+)"))
 
       connection:reply_http(request,
         table.concat(buffer),
-        code,
+        status,
         status_codes[status],
         headers
       )
