@@ -15,6 +15,6 @@ local wsapi_loader = common.make_loader{
   ttl = ONE_DAY,           -- time-to-live for Lua states
 }
 
-local m2w = require 'wsapi.mongrel2'
+local m2w = require 'mongrel2_wsapi'
 
 m2w.run(wsapi_loader, context, connection)
