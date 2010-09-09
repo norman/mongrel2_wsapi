@@ -14,6 +14,17 @@ In order to run this, you need to set up Mongrel2,
 [Mongrel2-Lua](http://github.com/jsimmons/mongrel2-lua/), and all their
 dependencies.
 
+## Installation
+
+This is pretty rough right now, because development is moving fast. For now I
+recommend installing ØMQ and Mongrel2 and all its dependencies. Then you can
+install all the Lua code with Luarocks as follows:
+
+    luarocks build http://github.com/norman/lua-zmq/raw/master/rockspecs/lua-zmq-scm-0.rockspec
+    luarocks build http://github.com/jsimmons/mongrel2-lua/raw/master/rockspecs/mongrel2-lua-scm-0.rockspec
+    luarocks build http://github.com/norman/mongrel2_wsapi/raw/master/rockspecs/mongrel2_wsapi-scm-0.rockspec
+
+
 ## License
 
 Copyright (c) 2010 Norman Clarke
