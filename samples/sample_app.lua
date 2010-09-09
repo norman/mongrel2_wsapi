@@ -1,5 +1,5 @@
 local mongrel2   = require 'mongrel2'
-local haml       = require 'haml'
+local m2w        = require 'mongrel2_wsapi'
 
 local sender_id  = '318ced1c-85ec-462e-93ca-a1c721e4e072'
 local sub_addr   = 'tcp://localhost:8989'
@@ -28,6 +28,5 @@ local function app_run(wsapi_env)
   end
   return 200, headers, coroutine.wrap(hello_text)
 end
-local m2w = require 'wsapi.mongrel2'
 
 m2w.run(app_run, context, connection)
