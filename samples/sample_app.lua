@@ -1,5 +1,4 @@
 local mongrel2   = require 'mongrel2'
-local haml       = require 'haml'
 local m2w        = require 'mongrel2_wsapi'
 
 local sender_id  = '318ced1c-85ec-462e-93ca-a1c721e4e072'
