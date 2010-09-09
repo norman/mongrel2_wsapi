@@ -12,19 +12,11 @@ main = Server(
 )
 
 lua_handler = Handler(send_spec  = 'tcp://127.0.0.1:8989',
-                      send_ident = '34f9ceee-cd52-4b7f-b197-88bf2f0ec378',
-                      recv_spec  = 'tcp://127.0.0.1:8988',
-											recv_ident = '')
+		send_ident = '34f9ceee-cd52-4b7f-b197-88bf2f0ec378',
+		recv_spec  = 'tcp://127.0.0.1:8988',
+		recv_ident = '')
 
-# the r'' string syntax means to not interpret any \ chars, for regexes
-server = Host(name="(.+)", routes={
-    r'/': lua_handler
-})
-
+server = Host(name="(.+)", routes={r'/': lua_handler})
 main.hosts.add(server)
-
 settings = {"zeromq.threads": 1}
-
 commit([main], settings=settings)
-
-

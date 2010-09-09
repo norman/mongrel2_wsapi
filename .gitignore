@@ -1,0 +1,5 @@
+*.pyc
+*.sqlite
+samples/log
+samples/tmp
+samples/run
