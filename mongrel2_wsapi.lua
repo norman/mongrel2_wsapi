@@ -117,7 +117,6 @@ function run(app_run, context, connection, docroot)
         table.concat(buffer),
         status,
         common.status_codes[status],
-        code,
         headers
       )
     end
