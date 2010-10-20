@@ -5,16 +5,23 @@
 -- Copyright (c) 2010 Norman Clarke
 --
 -----------------------------------------------------------------------------
+local __VERSION__ = "0.0.1"
+
 require "coxpcall"
-require "lfs"
-
-pcall = copcall
+pcall  = copcall
 xpcall = coxpcall
-local common = require "wsapi.common"
 
-module (..., package.seeall)
+local common   = require "wsapi.common"
+local lfs      = require "lfs"
+local concat   = table.concat
+local insert   = table.insert
+local pairs    = pairs
+local stderr   = io.stderr
+local tonumber = tonumber
 
--- parse host name and port
+module(...)
+
+-- Parse host name and port
 local function parse_host(str)
   local host, port = str:match("(.+):(%d+)")
   if not host then host = str end
@@ -23,10 +30,7 @@ local function parse_host(str)
   return host, port
 end
 
--- Note: this is not in Mongrel2 1.0, but is slated to be included
--- soon. I'm not sure what format will ultimately be used, but
--- I'll assmume here it will be a comma-separated list of ip addresses
--- with the ip of the originating host listed first.
+-- Pull first ip address off of a comma-separated list
 local function parse_remote_addr(str)
   if not str then return end
   return (str:match("([0-9%.]*),?"))
@@ -35,7 +39,7 @@ end
 -- Ensure path is relative to the app prefix and begins with "/" if blank.
 local function parse_path_info(path, app_prefix)
   local pattern = "^" .. (app_prefix or "") .. "(.*)"
-  local path_info = string.match(path, pattern) or "/"
+  local path_info = path:match(pattern) or "/"
   path_info = path_info == "" and "/" or path_info
   return path_info
 end
@@ -46,13 +50,11 @@ local function get_cgi_vars(req, diskpath, app_prefix, extra_vars)
   local vars = {}
 
   for k, v in pairs(req.headers) do
-    vars["HTTP_" .. string.gsub(string.upper(k), "-", "_")] = v
+    vars["HTTP_" .. k:upper():gsub("-", "_")] = v
   end
 
-  -- Does m2 provide some way of discovering this?
-  vars.SERVER_SOFTWARE = ("Mongrel2 WSAPI %s"):format(__VERSION__)
-
   vars.SERVER_NAME, vars.SERVER_PORT = parse_host(vars.HTTP_HOST)
+  vars.SERVER_SOFTWARE = ("Mongrel2 WSAPI %s"):format(__VERSION__)
   vars.CONTENT_LENGTH  = tonumber(vars.HTTP_CONTENT_LENGTH)
   vars.CONTENT_TYPE    = vars.HTTP_CONTENT_TYPE
   vars.PATH_INFO       = parse_path_info(vars.HTTP_PATH, app_prefix)
@@ -77,7 +79,7 @@ function run(app_run, context, connection, docroot)
   while true do
     local request = connection:recv()
     if request:is_disconnect() then
-      io.stderr:write("Received disconnect")
+      stderr:write("Received disconnect")
     else
       local cgi_vars = get_cgi_vars(request)
       cgi_vars.DOCUMENT_ROOT = docroot or lfs.currentdir()
@@ -95,7 +97,7 @@ function run(app_run, context, connection, docroot)
       local buffer = {}
       local output_buffer = {}
       function output_buffer:write(data)
-        table.insert(buffer, data)
+        insert(buffer, data)
       end
 
       local input_buffer = {}
@@ -106,7 +108,7 @@ function run(app_run, context, connection, docroot)
       local env = {
         input  = input_buffer,
         output = output_buffer,
-        error  = io.stderr,
+        error  = stderr,
         env    = get_cgi_var
       }
 
@@ -114,7 +116,7 @@ function run(app_run, context, connection, docroot)
       local status = tonumber(code) or tonumber(code:match("^(%d+)"))
 
       connection:reply_http(request,
-        table.concat(buffer),
+        concat(buffer),
         status,
         common.status_codes[status],
         headers
