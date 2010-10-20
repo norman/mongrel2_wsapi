@@ -5,8 +5,6 @@
 -- Copyright (c) 2010 Norman Clarke
 --
 -----------------------------------------------------------------------------
-local __VERSION__ = "0.0.1"
-
 require "coxpcall"
 pcall  = copcall
 xpcall = coxpcall
@@ -20,6 +18,8 @@ local stderr   = io.stderr
 local tonumber = tonumber
 
 module(...)
+
+local __VERSION__ = "0.0.1"
 
 -- Parse host name and port
 local function parse_host(str)
