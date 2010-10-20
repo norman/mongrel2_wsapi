@@ -1,4 +1,4 @@
-local m2 = require "wsapi.mongrel2"
+local m2 = require "mongrel2_wsapi"
 m2.publish_funcs_for_testing()
 
 local function make_request(vars)

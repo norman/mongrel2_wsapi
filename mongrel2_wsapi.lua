@@ -49,8 +49,8 @@ local function get_cgi_vars(req, diskpath, app_prefix, extra_vars)
     vars["HTTP_" .. string.gsub(string.upper(k), "-", "_")] = v
   end
 
-  -- Temporary, remove later
-  vars.SERVER_SOFTWARE = "Mongrel2/1.0"
+  -- Does m2 provide some way of discovering this?
+  vars.SERVER_SOFTWARE = "Mongrel2"
 
   vars.SERVER_NAME, vars.SERVER_PORT = parse_host(vars.HTTP_HOST)
   vars.CONTENT_LENGTH  = tonumber(vars.HTTP_CONTENT_LENGTH)
