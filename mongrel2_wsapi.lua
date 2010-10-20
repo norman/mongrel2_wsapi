@@ -29,7 +29,7 @@ end
 -- with the ip of the originating host listed first.
 local function parse_remote_addr(str)
   if not str then return end
-  return (str:match("(.-),"))
+  return (str:match("([0-9%.]*),?"))
 end
 
 -- Ensure path is relative to the app prefix and begins with "/" if blank.
@@ -67,8 +67,7 @@ local function get_cgi_vars(req, diskpath, app_prefix, extra_vars)
   return vars
 end
 
--- Sends the complete response through the "out" pipe,
--- using the provided write method
+-- Sends the complete response through the "out" pipe, using the provided write method
 function common.send_output(out, status, headers, res_iter, write_method, res_line)
    local write = out[write_method or "write"]
    common.send_content(out, res_iter, write_method)
@@ -91,6 +90,8 @@ function run(app_run, context, connection, docroot)
         end
       end
 
+      -- Don't buffer output, not sure it makes sense for m2 at this point,
+      -- though I could be mistaken.
       local buffer = {}
       local output_buffer = {}
       function output_buffer:write(data)

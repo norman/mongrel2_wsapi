@@ -20,7 +20,7 @@ local function make_request(vars)
       ["URI"]             = "/places?hello=world",
       ["User-Agent"]      = "curl/7.19.7",
       ["VERSION"]         = "HTTP/1.1",
-      ["X-Forwarded-For"] = "1.2.3.4, 2.3.4.5, 3.4.5.6"
+      ["X-Forwarded-For"] = "1.2.3.4, 2.3.4.5"
     },
     body    = "foo=bar",
     conn_id = "7",
