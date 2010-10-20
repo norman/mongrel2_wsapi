@@ -50,7 +50,7 @@ local function get_cgi_vars(req, diskpath, app_prefix, extra_vars)
   end
 
   -- Does m2 provide some way of discovering this?
-  vars.SERVER_SOFTWARE = "Mongrel2"
+  vars.SERVER_SOFTWARE = ("Mongrel2 WSAPI %s"):format(__VERSION__)
 
   vars.SERVER_NAME, vars.SERVER_PORT = parse_host(vars.HTTP_HOST)
   vars.CONTENT_LENGTH  = tonumber(vars.HTTP_CONTENT_LENGTH)
